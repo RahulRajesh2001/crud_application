@@ -8,6 +8,7 @@ app.set('view engine','ejs');
 
 const adminRoutes=require('./routes/admin.js')
 const shopRoutes=require('./routes/shop.js')
+const errorController=require('./controllers/errorController.js')
 
 
 const PORT=process.env.PORT;
@@ -21,9 +22,7 @@ app.use('/admin',adminRoutes);
 app.use(shopRoutes)
 
 //for the 404 error
-app.use((req,res,next)=>{
-    res.status(404).render('404',{pageTitle:"Page Not Found"})
-})
+app.use(errorController.get404)
 
 
 app.listen(PORT,()=>{

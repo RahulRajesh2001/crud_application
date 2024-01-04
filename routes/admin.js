@@ -1,19 +1,10 @@
-const express=require('express');
-const path=require('path')
+const express = require('express')
+const productController=require('../controllers/productController.js')
 
-const rootDirectory=require('../util/path.js')
+const router = express.Router()
 
-const router=express.Router();
+router.get('/add_product', productController.getAddProduct)
 
-router.get('/add_product',(req,res,next)=>{
-    res.render('add-product',{pageTitle:"Add product"})
-})
+router.post('/add-product', (res, req, next) => {})
 
-router.post('/add-product',(res,req,next)=>{
-
-})
-
-
-
-
-module.exports=router;
+module.exports = router
