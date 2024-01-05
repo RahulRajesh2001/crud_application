@@ -1,41 +1,45 @@
-const express=require('express');
-const bodyParser=require('body-parser')
-const mongoconnect=require('./config/db.js')
-const path=require('path')
+const express = require('express');
+const session = require('express-session');
+const nocache = require('nocache');
+const bodyParser = require('body-parser');
+const mongoconnect = require('./config/db.js');
+const path = require('path');
 require('dotenv').config();
-const app=express();
+const app = express();
 
+const PORT = process.env.PORT;
 
-//connect mongodb
-mongoconnect()
+// Connect to MongoDB
+mongoconnect();
 
-app.set('view engine','ejs');
+app.use(nocache());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')));
 
-const adminRoutes=require('./routes/admin.js')
-const shopRoutes=require('./routes/shop.js')
-const errorController=require('./controllers/errorController.js')
-const userRoutes=require('./routes/userRoute.js')
+// Session configuration
+app.use(
+  session({
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
+const adminRoutes = require('./routes/admin.js');
+const shopRoutes = require('./routes/shop.js');
+const errorController = require('./controllers/errorController.js');
+const userRoutes = require('./routes/userRoute.js');
 
-const PORT=process.env.PORT;
-//body parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Routes
+app.use('/admin', adminRoutes);
+app.use(shopRoutes);
+app.use('/api/v1', userRoutes);
 
-app.use(express.static(path.join(__dirname,'public')))
+// 404 error
+app.use(errorController.get404);
 
-
-//Routes
-app.use('/admin',adminRoutes);
-app.use(shopRoutes)
-app.use('/api/v1',userRoutes)
-
-//for the 404 error
-app.use(errorController.get404)
-
-
-app.listen(PORT,()=>{
-    console.log("Server started 3000")
-})
-
-
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});

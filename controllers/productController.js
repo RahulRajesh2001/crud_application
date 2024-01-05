@@ -1,25 +1,25 @@
 
-const products = require("../books.js");
+const products = require('../books.js');
 
-//for adding product page
-exports.getAddProduct=(req, res, next) => {
-    res.render('add-product', {
-      pageTitle: 'Add Product',
-      path: '/admin/add-product',
-      formsCSS: true,
-      productCSS: true,
-      activeAddProduct: true,
-    })
+
+// Middleware to check if the user is authenticated
+exports.isAuthenticated = (req, res, next) => {
+  if (req.session.user) {
+    next();
+  } else {
+    res.redirect('/api/v1/login');
   }
+};
 
-  //for getting all products
-  exports.getAllproducts= (req, res, next) => {
+// Get all products
+exports.getAllProducts = (req, res) => {
+  if (req.session.user) {
     res.render('shop', {
-        pageTitle: "Products",
-        data: products, 
-        path: '/',
-        hasProducts: products.length > 0,
-        activeShop: true,
-        productCSS: true
+      pageTitle: 'Products',
+      data: products,
+      user:req.session.user
     });
-}
+  } else {
+    res.redirect('/api/v1/login');
+  }
+};

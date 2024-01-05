@@ -5,6 +5,6 @@ const productController=require("../controllers/productController.js")
 const router = express.Router();
 
 //route for the home page
-router.get('/',productController.getAllproducts);
+router.get('/',productController.getAllProducts);
 
 module.exports = router;

@@ -1,51 +1,60 @@
-const User = require('../models/userModel.js')
-const bcrypt=require('bcrypt')
+const User = require('../models/userModel.js');
+const bcrypt = require('bcrypt');
 
-//for get register page
-exports.register =async (req, res) => {
- await res.render('register', { pageTitle: 'Register' })
-}
+exports.register = async (req, res) => {
+  await res.render('register', { pageTitle: 'Register' });
+};
 
-//for register Submit
-exports.registerSubmit =async (req, res, next) => {
-  const { name, email, password } = req.body
+exports.registerSubmit = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
 
- // Password hashing
-const salt=await bcrypt.genSalt(12);
-const hashedPassword=await bcrypt.hash(password,salt)
+    // Password hashing
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-  const user = new User({
-    name,
-    email,
-    password:hashedPassword,
-  })
-  user.save()
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
-  if (!user) {
-    alert('Register properly')
-  } else {
-    res.redirect('/')
+    await user.save();
+    res.redirect('/');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
-}
+};
 
-//login
-exports.login =async (req, res, next) => {
- await res.render('login', { pageTitle: 'Login' })
-}
-//for login user
-exports.loginSubmit = async(req, res, next) => {
-  const { email,password } = req.body
+exports.login = async (req, res) => {
+  await res.render('login', { pageTitle: 'Login' });
+};
 
-  try{
-   const user=await User.findOne({email});
-   if(user===null || !await bcrypt.compare(password,user.password)){
-      res.redirect('/api/v1/login')
-   }else{
+exports.loginSubmit = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      res.redirect('/api/v1/login');
+    } else {
+      // Set session data
+      req.session.user = user;
       res.redirect('/');
-   }
-  }catch(err){
-   console.log(err);
-   res.status(500)
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
-  
-}
+};
+
+exports.logout = (req, res) => {
+  // Destroy the session on logout
+  req.session.destroy((err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect('/');
+  });
+};
