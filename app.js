@@ -1,22 +1,22 @@
-const express = require('express');
-const session = require('express-session');
-const nocache = require('nocache');
-const bodyParser = require('body-parser');
-const mongoconnect = require('./config/db.js');
-const path = require('path');
-require('dotenv').config();
-const app = express();
+const express = require('express')
+const session = require('express-session')
+const nocache = require('nocache')
+const bodyParser = require('body-parser')
+const mongoconnect = require('./config/db.js')
+const path = require('path')
+require('dotenv').config()
+const app = express()
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT
 
 // Connect to MongoDB
-mongoconnect();
+mongoconnect()
 
-app.use(nocache());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(nocache())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.set('view engine', 'ejs')
+app.use(express.static(path.join(__dirname, 'public')))
 
 // Session configuration
 app.use(
@@ -25,21 +25,21 @@ app.use(
     resave: false,
     saveUninitialized: true,
   })
-);
+)
 
-const adminRoutes = require('./routes/admin.js');
-const shopRoutes = require('./routes/shop.js');
-const errorController = require('./controllers/errorController.js');
-const userRoutes = require('./routes/userRoute.js');
+const adminRoutes = require('./routes/admin.js')
+const shopRoutes = require('./routes/shop.js')
+const errorController = require('./controllers/errorController.js')
+const userRoutes = require('./routes/userRoute.js')
 
 // Routes
-app.use('/admin', adminRoutes);
-app.use(shopRoutes);
-app.use('/api/v1', userRoutes);
+app.use('/admin', adminRoutes)
+app.use(shopRoutes)
+app.use('/api/v1', userRoutes)
 
 // 404 error
-app.use(errorController.get404);
+app.use(errorController.get404)
 
 app.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
-});
+  console.log(`Server started on port ${PORT}`)
+})
