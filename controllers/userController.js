@@ -28,7 +28,12 @@ exports.registerSubmit = async (req, res, next) => {
 }
 
 exports.login = async (req, res) => {
-  await res.render('login', { pageTitle: 'Login' })
+  if(req.session.user){ 
+    res.redirect('/')
+  }else{
+    await res.render('login', { pageTitle: 'Login' })
+  }
+  
 }
 
 exports.loginSubmit = async (req, res) => {
@@ -47,17 +52,20 @@ exports.loginSubmit = async (req, res) => {
     console.error(error)
     res.status(500).send('Internal Server Error')
   }
-}
 
-// Destroy the session on logout
+  }
+
 exports.logout = (req, res) => {
   req.session.destroy((err) => {
-    if (err) {
-      console.error(err)
-    }
-    res.redirect('/')
-  })
-}
+      if (err) {
+          console.error(err);
+          res.status(500).send('Internal Server Error');
+      } else {
+          res.redirect('/api/v1/login');
+      }
+  });
+};
+
 
 //for the get admin dashboard --admin
 exports.getDashboard = async (req, res, next) => {

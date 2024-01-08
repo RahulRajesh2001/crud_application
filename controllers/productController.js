@@ -2,10 +2,10 @@ const Book = require('../models/bookModel.js')
 
 // Middleware to check if the user is authenticated
 exports.isAuthenticated = (req, res, next) => {
-  if (req.session.user) {
+  if (req.session.id) {
     next()
   } else {
-    res.redirect('/api/v1/login')
+    res.redirect('/api/v1/login');
   }
 }
 

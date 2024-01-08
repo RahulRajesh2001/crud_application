@@ -40,6 +40,8 @@ app.use('/api/v1', userRoutes)
 // 404 error
 app.use(errorController.get404)
 
+
+
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`)
 })
