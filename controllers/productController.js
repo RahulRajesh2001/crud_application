@@ -1,16 +1,15 @@
 const Book = require('../models/bookModel.js')
 
-// Middleware to check if the user is authenticated
-exports.isAuthenticated = (req, res, next) => {
-  if (req.session.id) {
-    next()
-  } else {
-    res.redirect('/api/v1/login');
+exports.checkAdmin = (req, res, next) => {
+  if (!(req.session.user && req.session.user.role === "admin")) {
+    return res.redirect('/');
   }
+  next();
 }
 
 // Get all products
 exports.getAllProducts = async (req, res) => {
+  
   const books = await Book.find()
   if (req.session.user) {
     res.render('shop', {

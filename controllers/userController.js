@@ -2,7 +2,9 @@ const User = require('../models/userModel.js')
 const bcrypt = require('bcrypt')
 
 exports.register = async (req, res) => {
-  await res.render('register', { pageTitle: 'Register' })
+
+    await res.render('register', { pageTitle: 'Register' })
+
 }
 
 exports.registerSubmit = async (req, res, next) => {
@@ -70,7 +72,7 @@ exports.logout = (req, res) => {
 //for the get admin dashboard --admin
 exports.getDashboard = async (req, res, next) => {
   const users = await User.find()
-  await res.render('adminDashboard', { pageTitle: 'Dashboard', people: users })
+    await res.render('adminDashboard', { pageTitle: 'Dashboard', people: users })
 }
 
 //delete a user
