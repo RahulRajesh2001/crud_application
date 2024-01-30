@@ -99,3 +99,17 @@ exports.searchUser = async (req, res) => {
   const users = await User.find({ name: { $regex: new RegExp(query, 'i') } })
   res.render('adminDashboard', { pageTitle: 'Search Results', people: users })
 }
+
+
+
+exports.check=(req,res)=>{
+    const {name}=req.body;
+
+    const user=User.find({name})
+    if(user){
+      console.log("user existed")
+    }else{
+      console.log("user not exist")
+    }
+
+}
